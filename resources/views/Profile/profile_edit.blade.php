@@ -7,7 +7,7 @@
 
     <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 ">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <form method="post" action="{{route('users.profiles.store', ['user' => auth()->user()])}}">
+            <form method="post" action="{{route('users.profiles.store', ['user' => auth()->user()])}}" enctype="multipart/form-data">
                 @csrf
 
                 About <input type="text" id="description" name="description" value="{{ optional($user->profile)->description }}">
@@ -53,6 +53,9 @@
                     <option value="Valmiera">Valmiera</option>
                     <option value="Ventspils">Ventspils</option>
                 </select>
+<br><br>
+                <input type="file" name="photo" id="photo">
+
                 <button>Submit</button>
             </form>
             {{--            Name <input type="text" id="name" name="name" value="{{auth()->user()->name}}"><br>--}}

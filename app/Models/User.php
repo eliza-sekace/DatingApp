@@ -17,32 +17,18 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -52,14 +38,35 @@ class User extends Authenticatable
         return "https://i.pravatar.cc/40?u=" . $this->email;
     }
 
-    public function getProfilePictureAttribute()
+    public function getProfilePictureAttribute($value)
     {
-        return "https://i.pravatar.cc/500?u=" . $this->email;
+        $userId = auth()->id();
+        $photo = DB::select("select photo from photos where user_id = $userId");
+        if ($photo == null) {
+            return "https://i.pravatar.cc/500?u=" . $this->email;
+        } else return $photo;
+        //return asset($value);
+        //return "https://i.pravatar.cc/500?u=" . $this->email;
+    }
+
+    public function getRandomUserPictures($randomUserId)
+    {
+        $photo = DB::select("select photo from photos where user_id = $randomUserId");
+        if ($photo == null) {
+            $photo = "https://i.pravatar.cc/500?u=" . $this->email;
+        } else $photo = "/storage/" . $photo[0]->photo.".jpg";
+        return $photo;
+
     }
 
     public function likes()
     {
         return $this->belongsToMany(User::class, 'likes', 'user_id', 'liked_user_id');
+    }
+
+    public function dislikes()
+    {
+        return $this->belongsToMany(User::class, 'dislikes', 'user_id', 'liked_user_id');
     }
 
     public function matches()
@@ -80,9 +87,14 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
     public function getRandom()
     {
-        return User::with('profile')
+        $result=User::with('profile')
             ->inRandomOrder()
             ->whereNotIn('id', [$this->id])
             // Add contraint on profile
@@ -91,7 +103,17 @@ class User extends Authenticatable
                     ->where('gender', $this->profile->interested_in)
                     ->where('interested_in', $this->profile->gender);
             })
-//            ->whereDoesntHave('dislikes')
+            //->where not in likes table
+//            ->where not in dislikes table
             ->first();
+
+
+        if($result == null){
+            $result = User::with('profile')
+                ->inRandomOrder()
+                ->first();
+        }
+
+        return $result;
     }
 }

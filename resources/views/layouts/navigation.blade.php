@@ -16,7 +16,37 @@
                         {{ __('Home') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('matches')" :active="request()->routeIs('matches')">
+                        {{ ('Matches') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('liked')" :active="request()->routeIs('liked')">
+                        {{ ('Liked') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('liked')" :active="request()->routeIs('liked')">
+                        {{ ('Messages') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
+                        {{ ('About') }}
+                    </x-nav-link>
+                </div>
+
+
             </div>
+
+{{--            <li> <a class="font-bold text-lg mb-4 block"--}}
+{{--                    href="profiles/{{auth()->user()->id}}"> My Profile </a> </li>--}}
+{{--            </li>--}}
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -37,14 +67,21 @@
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+                        <form method="GET" action="{{ route('profile', auth()->user()->id) }}">
+                            @csrf
+                            <x-dropdown-link href="profiles/{{auth()->user()->id}}">
+                                {{ __('My profile') }}
+                            </x-dropdown-link>
+                        </form>
                     </x-slot>
+
+
                 </x-dropdown>
             </div>
 
