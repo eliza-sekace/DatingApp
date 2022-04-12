@@ -13,7 +13,10 @@ class Profile extends Model
         'birthday',
         'gender',
         'interested_in',
-        'location'
+        'location',
+        'age_from',
+        'age_to'
     ];
+
 
 }

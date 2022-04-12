@@ -12,14 +12,15 @@
 {{--                    @include('layouts._sidebar-links')</div>--}}
                 <div class="flex-1 pl-3">
                     <div class="text-center items-center">
-                        <h3 class="text-xl font-bold">Match profiles</h3>
-                        <div class="flex justify-center items-center space-x-8 space-y-2">
-                           <img src="{{$randomUser->getRandomUserPictures($randomUser->id)}}">
+                        <h3 class="text-xl font-bold p-6">Match profiles</h3>
+                        <div class="flex justify-center items-center space-x-8 p-2">
+                           <img src="{{$randomUser->getRandomUserPictures($randomUser->id)}}" style="border-radius: 10%">
 {{--                         {{$randomUser->getRandomUserPictures($randomUser->id)}}--}}
                         </div>
 
                         <div>
                             <a href="profiles/{{$randomUser->id}}"> {{$randomUser->name}} </a>
+                            <p> Age: {{$randomUser->age}}</p>
                             {{--                            {{$user->getRandom()}}--}}
                         </div>
                     </div>

@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use App\Http\Middleware\TrustHosts;
 
 //use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -54,9 +57,14 @@ class User extends Authenticatable
         $photo = DB::select("select photo from photos where user_id = $randomUserId");
         if ($photo == null) {
             $photo = "https://i.pravatar.cc/500?u=" . $this->email;
-        } else $photo = "/storage/" . $photo[0]->photo.".jpg";
+        } else $photo = "/storage/" . $photo[0]->photo . ".jpg";
         return $photo;
+    }
 
+    public function getAgeAttribute()
+    {
+        $birthday = DB::select("select birthday from profiles where user_id=$this->id");
+        return Carbon::parse($birthday[0]->birthday)->age;
     }
 
     public function likes()
@@ -94,7 +102,7 @@ class User extends Authenticatable
 
     public function getRandom()
     {
-        $result=User::with('profile')
+        $result = User::with('profile')
             ->inRandomOrder()
             ->whereNotIn('id', [$this->id])
             // Add contraint on profile
@@ -104,11 +112,12 @@ class User extends Authenticatable
                     ->where('interested_in', $this->profile->gender);
             })
             //->where not in likes table
-//            ->where not in dislikes table
+            //->where not in dislikes table
+            //->where in age range
             ->first();
 
 
-        if($result == null){
+        if ($result == null || $this->profile->interested_in == "Everyone") {
             $result = User::with('profile')
                 ->inRandomOrder()
                 ->first();
@@ -116,4 +125,5 @@ class User extends Authenticatable
 
         return $result;
     }
+
 }

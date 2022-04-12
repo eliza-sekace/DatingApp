@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\ProfilesController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+require __DIR__ . '/auth.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,13 +29,14 @@ Route::get('/home', function () {
     ]);
 })->middleware(['auth'])->name('home');
 
-Route::post('/home/like/{user}', [LikesController::class, "like"])->name('like');
-Route::post('/home/dislike/{user}', [LikesController::class, "dislike"])->name('dislike');
+Route::post('/home/like/{user}', [LikesController::class, "like"])
+    ->name('like');
 
+Route::post('/home/dislike/{user}', [LikesController::class, "dislike"])
+    ->name('dislike');
 
-require __DIR__ . '/auth.php';
-
-Route::post('users/{user}/profiles', [ProfilesController::class, 'store'])->name('users.profiles.store');
+Route::post('users/{user}/profiles', [ProfilesController::class, 'store'])
+    ->name('users.profiles.store');
 
 Route::get('/liked', function () {
     return view('Matches/liked');
@@ -49,13 +52,24 @@ Route::get('profiles/{user}/edit', function () {
     return view('Profile/profile_edit', [
         'user' => auth()->user()
     ]);
+})->middleware(['auth']);
+
+Route::get('profiles/{user}', [ProfilesController::class, 'show'])
+    ->name("profile");
+
+//Route::get('/about', function () {
+//    return view('Home/about');
+//})->name('about');
+
+
+Route::post('users/{user}/edit', [UsersController::class, 'edit'])
+    ->name('user.edit');
+
+Route::get('profiles/{user}/user/edit', function () {
+    return view('User/user_edit', [
+        'user' => auth()->user()
+    ]);
 });
-
-Route::get('profiles/{user}', [ProfilesController::class, 'show'])->name("profile");
-
-Route::get('/about', function () {
-    return view('Home/about');
-})->name('about');
 
 //Route::get('/test1', [\App\Http\Controllers\HelloController::class, 'sendHi']);
 //Route::get('/test2', [\App\Http\Controllers\HelloController::class, 'sendHello']);

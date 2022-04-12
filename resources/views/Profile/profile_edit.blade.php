@@ -17,12 +17,27 @@
                     <option value="Mr">Mr</option>
                     <option value="Mx">Mx</option>
                 </select>
-                Interested in <select class="form-control" id="interested_in" name="interested_in">
-                    <option value="Ms">Ms</option>
-                    <option value="Mr">Mr</option>
-                    <option value="Mx">Mx</option>
-                    <option value="Everyone">Everyone</option>
-                </select>
+{{--                Interested in <select class="form-control" id="interested_in" name="interested_in">--}}
+{{--                    <option value="Ms">Ms</option>--}}
+{{--                    <option value="Mr">Mr</option>--}}
+{{--                    <option value="Mx">Mx</option>--}}
+{{--                    <option value="Everyone">Everyone</option>--}}
+{{--                </select>--}}
+<br><br>
+                Interested in:
+                <input type="radio" name="interested_in" value="Ms"> Ms
+                <input type="radio" name="interested_in" value="Mr"> Mr
+                <input type="radio" name="interested_in" value="Everyone"> Everyone
+<br><br>
+
+                Interested in age:<br>
+                    from:
+                    <input type="range" name="age_from" value="18" min="18" max="100" oninput="this.nextElementSibling.value = this.value">
+                    <output>18</output>
+                    to:
+                    <input type="range" name="age_to" value="18" min="18" max="100" oninput="this.nextElementSibling.value = this.value">
+                    <output>18</output>
+<br><br>
                 Location (municipality)<select class="form-control" id="location" name="location">
                     <option value="Aizkraukle">Aizkraukle</option>
                     <option value="Aluksne">Aluksne</option>

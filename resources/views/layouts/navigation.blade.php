@@ -35,11 +35,11 @@
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
-                        {{ ('About') }}
-                    </x-nav-link>
-                </div>
+{{--                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">--}}
+{{--                    <x-nav-link :href="route('about')" :active="request()->routeIs('about')">--}}
+{{--                        {{ ('About') }}--}}
+{{--                    </x-nav-link>--}}
+{{--                </div>--}}
 
 
             </div>
@@ -75,7 +75,7 @@
                         </form>
                         <form method="GET" action="{{ route('profile', auth()->user()->id) }}">
                             @csrf
-                            <x-dropdown-link href="profiles/{{auth()->user()->id}}">
+                            <x-dropdown-link href="/profiles/{{auth()->user()->id}}">
                                 {{ __('My profile') }}
                             </x-dropdown-link>
                         </form>
