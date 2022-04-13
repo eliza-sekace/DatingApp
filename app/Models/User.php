@@ -104,27 +104,23 @@ class User extends Authenticatable
             $allDislikes[] = $dislike['liked_user_id'];
         };
 
-
         $result = User::with('profile')
             ->inRandomOrder()
             ->whereNotIn('id', [$this->id])
             ->whereHas('profile', function (Builder $query) {
                 $query
-                    //->where age is in my age range
                     ->where('gender', $this->profile->interested_in)
                     ->where('interested_in', $this->profile->gender)
                     ->whereBetween('birthday', [
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_to} year")),
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_from} year")),
-                    ]);
+                    ])
+                ->where('age_from', '<=', $this->getAgeAttribute())
+                ->where('age_to', '>=', $this->getAgeAttribute());
             })
-            //->where not liked already (not in likes table)
             ->whereNotIn('id', $allLikes)
-            //->where not in dislikes table
             ->whereNotIn('id', $allDislikes)
-            //->where in age range of other
             ->first();
-
 
         if ($result == null || $this->profile->interested_in == "Everyone") {
             $result = User::with('profile')
