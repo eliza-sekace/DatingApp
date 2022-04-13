@@ -43,11 +43,7 @@
 
 
             </div>
-
-{{--            <li> <a class="font-bold text-lg mb-4 block"--}}
-{{--                    href="profiles/{{auth()->user()->id}}"> My Profile </a> </li>--}}
-{{--            </li>--}}
-
+            
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">

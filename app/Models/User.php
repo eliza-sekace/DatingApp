@@ -31,15 +31,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    public function getAvatarAttribute()
-    {
-        return "https://i.pravatar.cc/40?u=" . $this->email;
-    }
 
     public function getProfilePictureAttribute($value)
     {
@@ -57,7 +52,8 @@ class User extends Authenticatable
         $photo = DB::select("select photo from photos where user_id = $randomUserId");
         if ($photo == null) {
             $photo = "https://i.pravatar.cc/500?u=" . $this->email;
-        } else $photo = "/storage/" . $photo[0]->photo . ".jpg";
+        } else
+            $photo = "/storage/" . array_reverse($photo)[0]->photo . ".jpg";
         return $photo;
     }
 
@@ -79,15 +75,9 @@ class User extends Authenticatable
 
     public function matches()
     {
-        $sql = "select * from likes where user_id = {$this->id} and liked_user_id in (select user_id from likes where liked_user_id = {$this->id})";
-        $matches = DB::select($sql);
-        return User::whereIn('id', collect($matches)->pluck('liked_user_id'))->get();
-
-
-//        return $this->likes()->whereHas('likes', function (Builder $query) {
-//            $query->where('id', $this->id);
-//        })->get();
-
+        return $this->likes()->whereHas('likes', function (Builder $query) {
+            $query->where('id', $this->id);
+        })->get();
     }
 
     public function profile()
@@ -102,18 +92,37 @@ class User extends Authenticatable
 
     public function getRandom()
     {
+        $allLikes = [];
+        $likes = Like::whereIn('user_id', [$this->id])->get('liked_user_id');
+        foreach ($likes as $like) {
+            $allLikes[] = $like['liked_user_id'];
+        };
+
+        $allDislikes = [];
+        $dislikes = Dislike::whereIn('user_id', [$this->id])->get('liked_user_id');
+        foreach ($dislikes as $dislike) {
+            $allDislikes[] = $dislike['liked_user_id'];
+        };
+
+
         $result = User::with('profile')
             ->inRandomOrder()
             ->whereNotIn('id', [$this->id])
-            // Add contraint on profile
             ->whereHas('profile', function (Builder $query) {
                 $query
+                    //->where age is in my age range
                     ->where('gender', $this->profile->interested_in)
-                    ->where('interested_in', $this->profile->gender);
+                    ->where('interested_in', $this->profile->gender)
+                    ->whereBetween('birthday', [
+                        date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_to} year")),
+                        date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_from} year")),
+                    ]);
             })
-            //->where not in likes table
+            //->where not liked already (not in likes table)
+            ->whereNotIn('id', $allLikes)
             //->where not in dislikes table
-            //->where in age range
+            ->whereNotIn('id', $allDislikes)
+            //->where in age range of other
             ->first();
 
 
@@ -122,7 +131,6 @@ class User extends Authenticatable
                 ->inRandomOrder()
                 ->first();
         }
-
         return $result;
     }
 

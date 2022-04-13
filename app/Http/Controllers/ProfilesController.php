@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -39,9 +38,10 @@ class ProfilesController extends Controller
 
         if (!empty($addedPhoto)){
             Image::make($addedPhoto)
-                ->resize(400, 400, function ($const) {
-                    $const->aspectRatio();
-                })
+                ->fit(400,400)
+//                ->resize(400, 400, function ($const) {
+//                    $const->aspectRatio();
+//                })
                 ->save(storage_path() . "/app/public/pictures/{$filename}.jpg", 90, "jpg");
 
             DB::table('photos')->insert([
