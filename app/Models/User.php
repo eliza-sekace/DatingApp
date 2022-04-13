@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use App\Http\Middleware\TrustHosts;
-
-//use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -35,32 +33,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
-    public function getProfilePictureAttribute($value)
+    public function getPhotoAttribute(): string
     {
-        $userId = auth()->id();
-        $photo = DB::select("select photo from photos where user_id = $userId");
-        if ($photo == null) {
-            return "https://i.pravatar.cc/500?u=" . $this->email;
-        } else return $photo;
-        //return asset($value);
-        //return "https://i.pravatar.cc/500?u=" . $this->email;
-    }
-
-    public function getRandomUserPictures($randomUserId)
-    {
-        $photo = DB::select("select photo from photos where user_id = $randomUserId");
+        $photo = Photo::where('user_id', $this->id)->get();
         if ($photo == null) {
             $photo = "https://i.pravatar.cc/500?u=" . $this->email;
         } else
-            $photo = "/storage/" . array_reverse($photo)[0]->photo . ".jpg";
+            $photo = "/storage/" . ($photo->pluck('photo')->reverse())[0] . ".jpg";
         return $photo;
     }
 
-    public function getAgeAttribute()
+    public function getAgeAttribute(): string
     {
-        $birthday = DB::select("select birthday from profiles where user_id=$this->id");
-        return Carbon::parse($birthday[0]->birthday)->age;
+        $birthday = Profile::whereIn('user_id', [$this->id])->get('birthday');
+        return Carbon::parse($birthday->pluck('birthday')[0])->age;
     }
 
     public function likes()
@@ -115,8 +101,8 @@ class User extends Authenticatable
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_to} year")),
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_from} year")),
                     ])
-                ->where('age_from', '<=', $this->getAgeAttribute())
-                ->where('age_to', '>=', $this->getAgeAttribute());
+                    ->where('age_from', '<=', $this->getAgeAttribute())
+                    ->where('age_to', '>=', $this->getAgeAttribute());
             })
             ->whereNotIn('id', $allLikes)
             ->whereNotIn('id', $allDislikes)
@@ -124,6 +110,7 @@ class User extends Authenticatable
 
         if ($this->profile->interested_in == "Everyone") {
             $result = User::with('profile')
+                ->whereNotIn('id', [$this->id])
                 ->whereHas('profile', function (Builder $query) {
                     $query
                         ->whereIn('interested_in', [$this->profile->gender, 'Everyone'])
@@ -140,13 +127,12 @@ class User extends Authenticatable
                 ->inRandomOrder()
                 ->first();
         }
-
-        if ($result== null ) {
+        if ($result == null) {
             $result = User::with('profile')
+                ->whereNotIn('id', [$this->id])
                 ->inRandomOrder()
                 ->first();
         }
         return $result;
     }
-
 }

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
+            {{'Profile'}}
         </h2>
     </x-slot>
 
@@ -16,7 +16,9 @@
             </div>
             @if ($user->id == auth()->user()->id)
                 <div class="text-center">
-                    <form>
+                    @csrf
+                    <form action="/profiles/{{$user->id}}/delete-photo" method="post">
+                        @csrf
                         <button class="bg-gray-100 font-bold py-2 px-4 rounded"> delete photo</button>
                     </form>
                 </div>

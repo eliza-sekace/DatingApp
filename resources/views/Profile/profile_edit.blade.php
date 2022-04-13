@@ -5,39 +5,38 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+    <div class="py-12 max-w-7xl mx-auto sm:px-6 ">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <form method="post" action="{{route('users.profiles.store', ['user' => auth()->user()])}}" enctype="multipart/form-data">
+            <form method="post" action="{{route('users.profiles.store', ['user' => auth()->user()])}}"
+                  enctype="multipart/form-data">
                 @csrf
-
-                About <input type="text" id="description" name="description" value="{{ optional($user->profile)->description }}">
-                Birthday <input type="date" id="birthday" name="birthday" value="{{ optional($user->profile)->birthday }}">
-                Gender <select class="form-control" id="gender" name="gender" value="{{ optional($user->profile)->gender }}">
+                About  <x-input id="name" class="block mt-1 w-full"  type="text" id="description" name="description"
+                                value="{{ optional($user->profile)->description }}"> </x-input> <br> <br>
+                Birthday <input type="date" id="birthday" name="birthday"
+                                value="{{ optional($user->profile)->birthday }}">
+                Gender <select class="form-control" id="gender" name="gender"
+                               value="{{ optional($user->profile)->gender }}">
                     <option value="Ms">Ms</option>
                     <option value="Mr">Mr</option>
                     <option value="Mx">Mx</option>
                 </select>
-{{--                Interested in <select class="form-control" id="interested_in" name="interested_in">--}}
-{{--                    <option value="Ms">Ms</option>--}}
-{{--                    <option value="Mr">Mr</option>--}}
-{{--                    <option value="Mx">Mx</option>--}}
-{{--                    <option value="Everyone">Everyone</option>--}}
-{{--                </select>--}}
-<br><br>
+                <br><br>
                 Interested in:
                 <input type="radio" name="interested_in" value="Ms"> Ms
                 <input type="radio" name="interested_in" value="Mr"> Mr
                 <input type="radio" name="interested_in" value="Everyone"> Everyone
-<br><br>
+                <br><br>
 
                 Interested in age:<br>
-                    from:
-                    <input type="range" name="age_from" value="18" min="18" max="100" oninput="this.nextElementSibling.value = this.value">
-                    <output>18</output>
-                    to:
-                    <input type="range" name="age_to" value="18" min="18" max="100" oninput="this.nextElementSibling.value = this.value">
-                    <output>18</output>
-<br><br>
+                from:
+                <input type="range" name="age_from" value="18" min="18" max="100"
+                       oninput="this.nextElementSibling.value = this.value">
+                <output>18</output>
+                to:
+                <input type="range" name="age_to" value="18" min="18" max="100"
+                       oninput="this.nextElementSibling.value = this.value">
+                <output>18</output>
+                <br><br>
                 Location (municipality)<select class="form-control" id="location" name="location">
                     <option value="Aizkraukle">Aizkraukle</option>
                     <option value="Aluksne">Aluksne</option>
@@ -68,7 +67,7 @@
                     <option value="Valmiera">Valmiera</option>
                     <option value="Ventspils">Ventspils</option>
                 </select>
-<br><br>
+                <br><br>
                 <input type="file" name="photo" id="photo">
 
                 <button>Submit</button>

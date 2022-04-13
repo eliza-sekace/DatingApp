@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Home') }}
+            {{'Home'}}
         </h2>
     </x-slot>
 
@@ -11,7 +11,7 @@
                 <div class="text-center items-center">
                     <h3 class="text-xl font-bold p-6">Match profiles</h3>
                     <div class="flex justify-center items-center space-x-8 p-2">
-                        <img src="{{$randomUser->getRandomUserPictures($randomUser->id)}}" style="border-radius: 10%">
+                        <img src="{{$randomUser->photo}}" style="border-radius: 10%">
                     </div>
                     <div>
                         <a href="profiles/{{$randomUser->id}}" class="text-xl"> {{$randomUser->name}} </a>
@@ -37,14 +37,7 @@
                         </div>
                     </form>
                 </div>
-
-
             </div>
-            {{--                <div class="sm:rounded-lg lg:px-8"--}}
-            {{--                     style="background-color: lightsalmon">@include('Matches._match-list')</div>--}}
-
-            {{--            </div>--}}
         </div>
     </div>
-
 </x-app-layout>

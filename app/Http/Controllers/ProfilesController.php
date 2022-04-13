@@ -6,6 +6,8 @@ use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
@@ -36,9 +38,9 @@ class ProfilesController extends Controller
         $addedPhoto = $request->file('photo');
         $filename = Str::random(32);
 
-        if (!empty($addedPhoto)){
+        if (!empty($addedPhoto)) {
             Image::make($addedPhoto)
-                ->fit(400,400)
+                ->fit(400, 400)
 //                ->resize(400, 400, function ($const) {
 //                    $const->aspectRatio();
 //                })
@@ -53,4 +55,14 @@ class ProfilesController extends Controller
         return redirect("profiles/$id");
     }
 
+    public function delete(Request $request)
+    {
+        var_dump($request);
+       $photo= DB::table('photos')
+            ->where('photo', $photo);
+            //->$this->delete($photo->photo);
+       // var_dump($photo->pluck('photo'));
+//        Storage::disk('public')->delete(storage_path() . "/app/public/pictures/{$photo}.jpg");
+       // return redirect("profiles/{{auth->user()->id}}");
+    }
 }

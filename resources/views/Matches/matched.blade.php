@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Your matches') }}
+            {{ 'Your matches'}}
         </h2>
     </x-slot>
 
@@ -14,7 +14,7 @@
                         <ul>
                             <div class="flex items-center text-sm mb-4">
                                 <a href="/profiles/{{$user->id}}" class="p-2">
-                                    <img  src="{{$user->getRandomUserPictures($user->id) }}" width="40" height="40" style="border-radius: 50%"></a>
+                                    <img src="{{$user->photo }}" width="40" height="40" style="border-radius: 50%"></a>
                                 {{ $user->name }}
                             </div>
                         </ul>

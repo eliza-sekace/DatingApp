@@ -26,8 +26,9 @@ class LikesController extends Controller
         auth()->user()->likes()->attach($user);
 
         if ($user->likes()->where('id', auth()->id())->exists()) {
-            Mail::to(auth()->user()->email)->send(new MatchMail($user));
-            Mail::to($user->email)->send(new MatchMail(auth()->user()));
+            MatchEvent::dispatch($user);
+           // Mail::to(auth()->user()->email)->send(new MatchMail($user));
+            //Mail::to($user->email)->send(new MatchMail(auth()->user()));
         }
 
         return Redirect::home();

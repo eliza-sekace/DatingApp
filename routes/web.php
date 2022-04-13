@@ -57,10 +57,6 @@ Route::get('profiles/{user}/edit', function () {
 Route::get('profiles/{user}', [ProfilesController::class, 'show'])
     ->name("profile");
 
-//Route::get('/about', function () {
-//    return view('Home/about');
-//})->name('about');
-
 
 Route::post('users/{user}/edit', [UsersController::class, 'edit'])
     ->name('user.edit');
@@ -70,6 +66,15 @@ Route::get('profiles/{user}/user/edit', function () {
         'user' => auth()->user()
     ]);
 });
+
+Route::post('profiles/{user}/delete-photo',[ProfilesController::class, 'delete']);
+
+
+
+//Route::get('/about', function () {
+//    return view('Home/about');
+//})->name('about');
+
 
 //Route::get('/test1', [\App\Http\Controllers\HelloController::class, 'sendHi']);
 //Route::get('/test2', [\App\Http\Controllers\HelloController::class, 'sendHello']);
