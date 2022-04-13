@@ -21,13 +21,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', function () {
-    return view('Home/home', [
-        'matches' => auth()->user()->matches(),
-        'user' => auth()->user(),
-        'randomUser' => auth()->user()->getRandom()
-    ]);
-})->middleware(['auth'])->name('home');
+//Route::get('/home', function () {
+//    return view('Home/home', [
+////        'matches' => auth()->user()->matches(),
+//        'user' => auth()->user(),
+//        'randomUser' =>
+//    ]);
+//})->middleware(['auth'])->name('home');
+
+Route::get('/home', [UsersController::class, "getRandom"])->middleware(['auth'])->name('home');
 
 Route::post('/home/like/{user}', [LikesController::class, "like"])
     ->name('like');
