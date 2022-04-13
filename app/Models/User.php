@@ -110,7 +110,7 @@ class User extends Authenticatable
             ->whereHas('profile', function (Builder $query) {
                 $query
                     ->where('gender', $this->profile->interested_in)
-                    ->where('interested_in', $this->profile->gender)
+                    ->whereIn('interested_in', [$this->profile->gender, "Everyone"])
                     ->whereBetween('birthday', [
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_to} year")),
                         date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_from} year")),
@@ -122,7 +122,26 @@ class User extends Authenticatable
             ->whereNotIn('id', $allDislikes)
             ->first();
 
-        if ($result == null || $this->profile->interested_in == "Everyone") {
+        if ($this->profile->interested_in == "Everyone") {
+            $result = User::with('profile')
+                ->whereHas('profile', function (Builder $query) {
+                    $query
+                        ->whereIn('interested_in', [$this->profile->gender, 'Everyone'])
+                        ->where('age_from', '<=', $this->getAgeAttribute())
+                        ->where('age_to', '>=', $this->getAgeAttribute())
+                        ->whereBetween('birthday', [
+                            date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_to} year")),
+                            date("Y-m-d", strtotime(date("Y-m-d") . " -{$this->profile->age_from} year")),
+                        ]);
+
+                })
+                ->whereNotIn('id', $allLikes)
+                ->whereNotIn('id', $allDislikes)
+                ->inRandomOrder()
+                ->first();
+        }
+
+        if ($result== null ) {
             $result = User::with('profile')
                 ->inRandomOrder()
                 ->first();
