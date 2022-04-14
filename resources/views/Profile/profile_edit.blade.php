@@ -18,7 +18,6 @@
                                value="{{ optional($user->profile)->gender }}">
                     <option value="Ms">Ms</option>
                     <option value="Mr">Mr</option>
-                    <option value="Mx">Mx</option>
                 </select>
                 <br><br>
                 Interested in:

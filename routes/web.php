@@ -18,16 +18,8 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('Home/hello');
 });
-
-//Route::get('/home', function () {
-//    return view('Home/home', [
-////        'matches' => auth()->user()->matches(),
-//        'user' => auth()->user(),
-//        'randomUser' =>
-//    ]);
-//})->middleware(['auth'])->name('home');
 
 Route::get('/home', [UsersController::class, "getRandom"])->middleware(['auth'])->name('home');
 
